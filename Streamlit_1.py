@@ -1,39 +1,49 @@
 import streamlit as st
 import pandas as pd
-import altair as alt
+import numpy as np
+import matplotlib.pyplot as plt
 
-@st.cache_data
-def get_UN_data():
-    AWS_BUCKET_URL = "https://streamlit-demo-data.s3-us-west-2.amazonaws.com"
-    df = pd.read_csv(AWS_BUCKET_URL + "/agri.csv.gz")
-    return df.set_index("Region")
+df = pd.DataFrame({
+    'first column': [1, 2, 3, 4],
+    'second column': [10, 20, 30, 40]
+})
 
-try:
-    df = get_UN_data()
-    countries = st.multiselect(
-        "Choose countries", list(df.index), ["China", "United States of America"]
-    )
-    if not countries:
-        st.error("Please select at least one country.")
-    else:
-        data = df.loc[countries]
-        data /= 1000000.0
-        st.subheader("Gross agricultural production ($B)")
-        st.dataframe(data.sort_index())
+values = np.random.normal(loc=10, scale=1.5, size=100)
 
-        data = data.T.reset_index()
-        data = pd.melt(data, id_vars=["index"]).rename(
-            columns={"index": "year", "value": "Gross Agricultural Product ($B)"}
-        )
-        chart = (
-            alt.Chart(data)
-            .mark_area(opacity=0.3)
-            .encode(
-                x="year:T",
-                y=alt.Y("Gross Agricultural Product ($B):Q", stack=None),
-                color="Region:N",
-            )
-        )
-        st.altair_chart(chart, use_container_width=True)
-except:
-    st.error(f"This demo requires internet access. Connection error")
+st.header("Streamlit Tutorial")
+
+st.header("You can display all kinds of data representations such as...")
+st.subheader("Tables: ")
+
+st.subheader('Charts:')
+st.write(df)
+
+st.markdown('#### Bar Chart:')
+st.bar_chart(df)
+
+st.markdown('#### Line Graphs')
+st.line_chart(df,y='second column')
+
+st.markdown('#### Histograms')
+plt.hist(values, bins=20)
+
+st.markdown('#### Plot a map')
+map_data = pd.DataFrame(
+    np.random.randn(1000, 2) / [50, 50] + [42.36, -71.06],
+    columns=['lat', 'lon'])
+st.map(map_data)
+
+# Widgets
+st.header("Now let's look at Widgets")
+
+st.markdown('Sliders')
+x = st.slider('x')
+st.write(x, 'squared is', x * x)
+
+st.markdown('Text Boxes')
+st.text_input("Your name", key="name")
+st.session_state.name
+
+st.markdown('Check Boxes')
+if st.checkbox('Check This to See Something'):
+    st.markdown("Mountain.jpg")
