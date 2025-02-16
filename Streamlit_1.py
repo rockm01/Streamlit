@@ -46,4 +46,4 @@ st.session_state.name
 
 st.markdown('Check Boxes')
 if st.checkbox('Check This to See Something'):
-    st.markdown("Mountain.jpg")
+    st.image("Mountain.jpg")
