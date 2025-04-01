@@ -1,3 +1,11 @@
+#“""Name: Matthew Rock
+#Library: Streamlit
+#URL: https://docs.streamlit.io/
+#Description: A python package for presenting data through a browser window.
+#
+#Streamlit is a python library that runs python code and displays in a browser window. The user interacts through the browser via prompted inputs.
+# Streamlit makes it easy to create webpage applications to display data with minimal code"""
+
 import streamlit as st
 import pandas as pd
 import numpy as np
