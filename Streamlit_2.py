@@ -17,10 +17,11 @@ eq_df = pd.read_csv('data/Earthquake_cleaned.csv')
 eq_df['time'] = pd.to_datetime(eq_df['time']).dt.strftime('%m-%d-%Y')
 vol_df = pd.read_csv('data/Volcanoes_cleaned.csv')
 
-#Setup the sidebar
+#--------------- Setup Sidebar ---------------#
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Earthquake Data", "Volcano Data"])
 
+#================ Earthquake Page ================#
 if page == "Earthquake Data":
     countries = eq_df['country'].unique().tolist()
     countries.sort()
@@ -32,22 +33,36 @@ if page == "Earthquake Data":
             s_all = st.checkbox("Select All")
         with left_column:
             if s_all:
-                country_select = st.multiselect("Select Country", countries, default=countries)
+                country_select = st.multiselect("Select Country",
+                                                countries,
+                                                default=countries
+                                                )
             else:
-                country_select = st.multiselect("Select Country", countries, default=None
-                                            )
+                country_select = st.multiselect("Select Country",
+                                                countries,
+                                                default=None
+                                                )
         left_column, right_column = st.columns(2)
         with left_column:
-            start_date = st.date_input("Start Date", value=pd.to_datetime(eq_df['time']).min())
+            start_date = st.date_input("Start Date",
+                                       value=pd.to_datetime(eq_df['time']).min()
+                                       )
         with right_column:
-            end_date = st.date_input("End Date", value=pd.to_datetime(eq_df['time']).max())
+            end_date = st.date_input("End Date",
+                                     value=pd.to_datetime(eq_df['time']).max()
+                                     )
 
-        mag = st.slider("Select Magnitude", min_value=0, max_value=10, value=(0, 10))
+        mag = st.slider("Select Magnitude",
+                        min_value=0,
+                        max_value=10,
+                        value=(0, 10)
+                        )
 
 
-
+# Produce Map and Data
     tab1, tab2 = st.tabs(["Map", "Data"])
 
+    #Slice Dataframe based on selections from widgets
     map_df = eq_df[(eq_df['country'].isin(country_select)) &
                    ((eq_df['mag'] <= mag[1]) & (eq_df['mag'] >= mag[0])) &
                     ((eq_df['time'] >= start_date.strftime('%m-%d-%Y')) & (eq_df['time'] <= end_date.strftime('%m-%d-%Y')))
@@ -60,11 +75,13 @@ if page == "Earthquake Data":
     tab2.dataframe(display_df, width=600)
 
 
+#================ Volcano Page ================#
 if page == "Volcano Data":
     st.header("Volcano Data")
 
     vol_df['Death_log'] = np.log10(vol_df['Deaths'])
 
+    #Create Boxplot
     a_chart = alt.Chart(vol_df).mark_boxplot(color='red').encode(
         x=alt.X('Deaths:Q', scale=alt.Scale(type='log')),
         y=alt.Y("Type:N"),

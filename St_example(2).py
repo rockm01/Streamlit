@@ -1,11 +1,13 @@
 import streamlit as st
 import pandas as pd
 
-
+# Show headers, subheaders, and markdowns
 st.image('SL_Logo.png')
 st.caption('Matthew Rock')
 st.caption('OIM 7502')
 st.divider()
+
+#if st.checkbox('Let\'s Begin'):
 
 pill = st.pills(" ", ['What is Streamlit?', 'Why Use Streamlit?', 'How do I start?'])
 if pill == 'What is Streamlit?':
